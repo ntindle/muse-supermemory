@@ -1,12 +1,50 @@
 #!/usr/bin/env node
 const readline = require('node:readline');
+const { getContainerTag } = require('../hooks/lib/container-tag');
 const { getApiKey } = require('../hooks/lib/settings');
 
 const MCP_URL =
   process.env.SUPERMEMORY_MCP_URL || 'https://mcp.supermemory.ai/mcp';
 const REQUEST_TIMEOUT_MS = 30000;
 
+const REPO_SCOPED_TOOLS = new Set([
+  'search_memory',
+  'add_memory',
+  'listDocuments',
+  'listMemories',
+  'memory-graph',
+  'fetch-graph-data',
+  'save-memory',
+]);
+
 let sessionId = null;
+
+function injectRepoContainerTag(message, containerTag) {
+  if (!containerTag || message.method !== 'tools/call') return;
+  const params = message.params;
+  if (!params || typeof params !== 'object') return;
+  if (!REPO_SCOPED_TOOLS.has(params.name)) return;
+
+  let args = params.arguments;
+  let encoded = false;
+  if (args == null) {
+    params.arguments = { containerTag };
+    return;
+  }
+  if (typeof args === 'string') {
+    try {
+      args = JSON.parse(args);
+      encoded = true;
+    } catch {
+      return;
+    }
+  }
+  if (!args || typeof args !== 'object' || Array.isArray(args)) return;
+  if (typeof args.containerTag === 'string' && args.containerTag.trim()) return;
+
+  args.containerTag = containerTag;
+  params.arguments = encoded ? JSON.stringify(args) : args;
+}
 
 function send(message) {
   process.stdout.write(`${JSON.stringify(message)}\n`);
@@ -69,12 +107,19 @@ async function forward(message, apiKey) {
 }
 
 async function main() {
+  const cwd = process.cwd();
   let apiKey = null;
   let keyError = null;
+  let repoContainerTag = null;
   try {
-    apiKey = getApiKey(process.cwd());
+    apiKey = getApiKey(cwd);
   } catch (err) {
     keyError = err;
+  }
+  try {
+    repoContainerTag = getContainerTag(cwd);
+  } catch {
+    repoContainerTag = null;
   }
 
   let queue = Promise.resolve();
@@ -99,6 +144,7 @@ async function main() {
         return;
       }
       try {
+        injectRepoContainerTag(message, repoContainerTag);
         await forward(message, apiKey);
       } catch (err) {
         sendError(message.id, -32000, `Supermemory MCP proxy error: ${err.message}`);
@@ -111,4 +157,8 @@ async function main() {
   });
 }
 
-main();
+module.exports = { injectRepoContainerTag };
+
+if (require.main === module) {
+  main();
+}

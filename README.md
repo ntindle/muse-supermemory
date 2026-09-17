@@ -61,6 +61,7 @@ Get a key at [app.supermemory.ai](https://app.supermemory.ai).
 
 | Command | Description |
 | --- | --- |
+| `/supermemory:index` | Index codebase architecture and patterns |
 | `/supermemory:status` | Auth, container tag, and API reachability |
 | `/supermemory:logout` | Clear saved Muse credentials |
 

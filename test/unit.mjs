@@ -116,3 +116,28 @@ describe('hooks', () => {
     assert.equal(out.continue, true);
   });
 });
+
+describe('mcp proxy', () => {
+  const { injectRepoContainerTag } = require(join(root, 'mcp/proxy.js'));
+
+  test('defaults add_memory to the repo container', () => {
+    const message = {
+      method: 'tools/call',
+      params: { name: 'add_memory', arguments: { content: 'use bun' } },
+    };
+    injectRepoContainerTag(message, 'repo_example__abc');
+    assert.equal(message.params.arguments.containerTag, 'repo_example__abc');
+  });
+
+  test('does not overwrite an explicit containerTag', () => {
+    const message = {
+      method: 'tools/call',
+      params: {
+        name: 'search_memory',
+        arguments: { query: 'x', containerTag: 'other' },
+      },
+    };
+    injectRepoContainerTag(message, 'repo_example__abc');
+    assert.equal(message.params.arguments.containerTag, 'other');
+  });
+});

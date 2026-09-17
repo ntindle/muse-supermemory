@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "name": "supermemory",
   "displayName": "Supermemory",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Persistent memory across Muse Code sessions using Supermemory.",
   "compat": {
     "source": "native",
@@ -17,6 +17,11 @@
       }
     ],
     "commands": [
+      {
+        "id": "index",
+        "path": "commands/index.md",
+        "enabledDefault": true
+      },
       {
         "id": "status",
         "path": "commands/status.md",
