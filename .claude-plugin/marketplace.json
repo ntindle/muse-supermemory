@@ -1,0 +1,19 @@
+{
+  "name": "supermemory-muse",
+  "description": "Supermemory plugin for Muse Code — persistent memory across sessions and projects",
+  "owner": {
+    "name": "Supermemory",
+    "email": "support@supermemory.ai"
+  },
+  "plugins": [
+    {
+      "name": "supermemory",
+      "source": "./",
+      "description": "Persistent memory across Muse Code sessions using Supermemory",
+      "category": "productivity",
+      "author": {
+        "name": "Supermemory"
+      }
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "muse-supermemory",
+  "version": "0.1.0",
+  "description": "Muse Code plugin by Supermemory AI",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "test": "node --test test/unit.mjs",
+    "validate": "MUSE_EXPERIMENTAL_PLUGINS=1 muse plugins validate . --json"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

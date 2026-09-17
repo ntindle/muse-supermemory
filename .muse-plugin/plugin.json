@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "name": "supermemory",
+  "displayName": "Supermemory",
+  "version": "0.1.0",
+  "description": "Persistent memory across Muse Code sessions using Supermemory.",
+  "compat": {
+    "source": "native",
+    "manifestDir": ".muse-plugin"
+  },
+  "capabilities": {
+    "skills": [
+      {
+        "id": "supermemory",
+        "path": "skills/supermemory/SKILL.md",
+        "enabledDefault": true
+      }
+    ],
+    "commands": [
+      {
+        "id": "status",
+        "path": "commands/status.md",
+        "enabledDefault": true
+      },
+      {
+        "id": "logout",
+        "path": "commands/logout.md",
+        "enabledDefault": true
+      }
+    ],
+    "hooks": [
+      {
+        "id": "session-start",
+        "event": "SessionStart",
+        "command": ["node", "hooks/session-start.js"],
+        "timeoutMs": 30000,
+        "statusMessage": "Loading supermemory"
+      },
+      {
+        "id": "prompt-recall",
+        "event": "UserPromptSubmit",
+        "command": ["node", "hooks/recall.js"],
+        "timeoutMs": 5000,
+        "statusMessage": "Recalling supermemory"
+      },
+      {
+        "id": "recall-approve",
+        "event": "PreToolUse",
+        "command": ["node", "hooks/recall-approve.js"],
+        "timeoutMs": 5000,
+        "statusMessage": "Approving supermemory recall"
+      },
+      {
+        "id": "session-capture",
+        "event": "Stop",
+        "command": ["node", "hooks/capture.js"],
+        "timeoutMs": 30000,
+        "statusMessage": "Saving supermemory"
+      }
+    ],
+    "mcpServers": [
+      {
+        "id": "supermemory",
+        "transport": "stdio",
+        "command": ["node", "mcp/proxy.js"]
+      }
+    ],
+    "reminders": []
+  }
+}
