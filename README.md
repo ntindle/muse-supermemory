@@ -4,6 +4,8 @@ Persistent memory for [Muse Code](https://dev.meta.ai/docs/muse-code) — powere
 
 Your agent remembers what you worked on across sessions and projects.
 
+Docs: [Muse Code plugin](https://supermemory.ai/docs/integrations/muse-code)
+
 ## Install
 
 Muse Code 1.3+ with plugins enabled. In a Muse session:
